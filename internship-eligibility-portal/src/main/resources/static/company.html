@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Company Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-portal mb-4">
+  <div class="container">
+    <span class="navbar-brand mb-0 h5">Company Portal</span>
+    <span>
+      <span id="userEmail" class="me-3"></span>
+      <button class="btn btn-sm btn-outline-light" onclick="logout()">Log out</button>
+    </span>
+  </div>
+</nav>
+
+<div class="container pb-5">
+  <div id="alert" class="alert d-none"></div>
+
+  <ul class="nav nav-pills mb-4" id="tabs">
+    <li class="nav-item"><button class="nav-link active" data-tab="mine">My Internships &amp; Applicants</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="post">Post Internship</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="notifications">Notifications</button></li>
+  </ul>
+
+  <!-- MY INTERNSHIPS -->
+  <div class="tab-pane" id="tab-mine">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">My Internships</h5>
+      <button class="btn btn-sm btn-outline-secondary" onclick="loadInternships()">Refresh</button>
+    </div>
+    <div id="sidePanel" class="card card-portal p-3 mb-3 d-none"></div>
+    <div id="internshipsList"></div>
+  </div>
+
+  <!-- POST INTERNSHIP -->
+  <div class="tab-pane d-none" id="tab-post">
+    <div class="card card-portal p-4">
+      <h5 class="mb-1">Create Internship &amp; Eligibility Criteria</h5>
+      <p class="small text-muted">New internships go live after faculty approval. You can change the criteria later; students are re-evaluated automatically.</p>
+      <form id="internshipForm" class="row g-3">
+        <div class="col-md-6"><label class="form-label">Role</label><input class="form-control" id="i-role" required></div>
+        <div class="col-md-6"><label class="form-label">Location</label><input class="form-control" id="i-location"></div>
+        <div class="col-12"><label class="form-label">Description</label><textarea class="form-control" id="i-description" rows="2"></textarea></div>
+        <div class="col-md-3"><label class="form-label">Duration</label><input class="form-control" id="i-duration" placeholder="6 months"></div>
+        <div class="col-md-3"><label class="form-label">Stipend</label><input type="number" class="form-control" id="i-stipend"></div>
+        <div class="col-md-3"><label class="form-label">Work Mode</label>
+          <select class="form-select" id="i-workmode"><option>ONLINE</option><option>OFFLINE</option><option selected>HYBRID</option></select></div>
+        <div class="col-md-3"><label class="form-label">Vacancies</label><input type="number" class="form-control" id="i-vacancies" value="1"></div>
+        <div class="col-md-6"><label class="form-label">Application Deadline</label><input type="date" class="form-control" id="i-deadline"></div>
+        <div class="col-md-6"><label class="form-label">Interview stages (ctrl/cmd-click to choose; order is fixed as listed)</label>
+          <select class="form-select" id="i-stages" multiple size="5">
+            <option value="APTITUDE_TEST" selected>Aptitude Test</option>
+            <option value="CODING_TEST" selected>Coding Test</option>
+            <option value="TECHNICAL" selected>Technical Interview</option>
+            <option value="HR" selected>HR Interview</option>
+            <option value="GROUP_DISCUSSION">Group Discussion</option>
+          </select></div>
+
+        <div class="col-12"><hr><h6>Eligibility Criteria</h6></div>
+        <div class="col-md-3"><label class="form-label">Minimum CGPA</label><input type="number" step="0.1" class="form-control" id="e-cgpa" value="7.0"></div>
+        <div class="col-md-3"><label class="form-label">Max Backlogs</label><input type="number" class="form-control" id="e-backlogs" value="0"></div>
+        <div class="col-md-3"><label class="form-label">Eligible Branches</label><input class="form-control" id="e-branches" placeholder="CSE,IT"></div>
+        <div class="col-md-3"><label class="form-label">Required Semester</label><input type="number" class="form-control" id="e-semester"></div>
+        <div class="col-md-6"><label class="form-label">Required Skills (comma separated)</label><input class="form-control" id="e-skills" placeholder="Java,SQL"></div>
+        <div class="col-md-6"><label class="form-label">Required Certifications</label><input class="form-control" id="e-certs"></div>
+        <div class="col-md-3"><label class="form-label">Min Resume Match % (to apply)</label><input type="number" min="0" max="100" class="form-control" id="e-resume"></div>
+        <div class="col-md-3"><label class="form-label">Min ATR Score (faculty shortlist)</label><input type="number" min="0" max="100" class="form-control" id="e-atr"></div>
+        <div class="col-12"><button class="btn btn-primary">Submit Internship</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="tab-pane d-none" id="tab-notifications">
+    <h5 class="mb-3">Notifications</h5>
+    <div id="notifList"></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/company.js"></script>
+</body>
+</html>

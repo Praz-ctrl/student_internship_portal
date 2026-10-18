@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: portal-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: internship_portal
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - portal-network
+
+  app:
+    build:
+      context: ./internship-eligibility-portal
+      dockerfile: Dockerfile
+    container_name: portal-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8080}:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/internship_portal?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      JWT_SECRET: ${JWT_SECRET:-super-secret-random-hex-key-replace-with-minimum-32-chars-in-prod-12345}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-900000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:8080}
+      APP_UPLOAD_DIR: /app/uploads
+      APP_REQUIRE_VERIFICATION: "true"
+      APP_REQUIRE_INTERNSHIP_APPROVAL: "true"
+    volumes:
+      - uploads_data:/app/uploads
+    networks:
+      - portal-network
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  portal-network:
+    driver: bridge

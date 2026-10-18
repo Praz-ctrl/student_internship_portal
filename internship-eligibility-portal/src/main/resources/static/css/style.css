@@ -1,0 +1,46 @@
+:root {
+  --navy: #0F2557;
+  --indigo: #5439D6;
+  --blue: #2D6CDF;
+}
+
+body {
+  background: #F5F7FC;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+.navbar-portal {
+  background: linear-gradient(100deg, var(--navy), var(--indigo));
+}
+
+.navbar-portal .navbar-brand,
+.navbar-portal .nav-link,
+.navbar-portal span {
+  color: #fff !important;
+}
+
+.card-portal {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px rgba(15, 37, 87, 0.08);
+}
+
+.badge-eligible { background: #188A5E; }
+.badge-ineligible { background: #C4432B; }
+
+.status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #EFECFC;
+  color: var(--indigo);
+}
+
+.hero-auth {
+  background: linear-gradient(150deg, var(--navy), var(--indigo));
+  color: #fff;
+  border-radius: 16px;
+  padding: 32px;
+}

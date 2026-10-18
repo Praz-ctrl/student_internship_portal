@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-portal mb-4">
+  <div class="container">
+    <span class="navbar-brand mb-0 h5">Admin Portal</span>
+    <span><span id="userEmail" class="me-3"></span><button class="btn btn-sm btn-outline-light" onclick="logout()">Log out</button></span>
+  </div>
+</nav>
+<div class="container pb-5">
+  <div id="alert" class="alert d-none"></div>
+  <ul class="nav nav-pills mb-4" id="tabs">
+    <li class="nav-item"><button class="nav-link active" data-tab="users">Users</button></li>
+    <li class="nav-item"><button class="nav-link" data-tab="reports">Reports &amp; Analytics</button></li>
+  </ul>
+  <div class="tab-pane" id="tab-users">
+    <table class="table bg-white card-portal align-middle">
+      <thead><tr><th>ID</th><th>Email</th><th>Role</th><th>Account</th><th></th></tr></thead>
+      <tbody id="usersBody"></tbody>
+    </table>
+  </div>
+  <div class="tab-pane d-none" id="tab-reports"><div id="reportCards" class="row g-3"></div></div>
+</div>
+<script src="js/api.js"></script>
+<script src="js/report.js"></script>
+<script>
+requireAuth('ADMIN');
+document.getElementById('userEmail').textContent = getEmail();
+setupTabs(tab => { if (tab === 'users') loadUsers(); if (tab === 'reports') loadReports('reportCards'); });
+
+async function loadUsers() {
+  try {
+    const users = await api('/admin/users');
+    document.getElementById('usersBody').innerHTML = users.map(u => `<tr><td>${esc(u.id)}</td><td>${esc(u.email)}</td><td>${pill(u.role)}</td>
+      <td>${u.enabled ? '<span class="badge badge-eligible">ACTIVE</span>' : '<span class="badge badge-ineligible">DISABLED</span>'}</td>
+      <td>${u.email === getEmail() ? '' : `<button class="btn btn-sm btn-outline-${u.enabled ? 'danger' : 'success'}" onclick="setEnabled(${u.id},${!u.enabled})">${u.enabled ? 'Disable' : 'Enable'}</button>`}</td></tr>`).join('');
+  } catch (err) { showAlert('alert', err.message); }
+}
+async function setEnabled(id, value) {
+  try { await api('/admin/users/' + id + '/enabled?value=' + value, 'POST'); loadUsers(); }
+  catch (err) { showAlert('alert', err.message); }
+}
+loadUsers();
+</script>
+</body>
+</html>
